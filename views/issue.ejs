@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>#<%= issue.ordinal %>: <%= issue.title %></title>
+    </head>
+    
+    <body>        
+        <p>
+            Hello <%= user.username %>, you are <%= user.role %>! <a href='/account/logout'>Log Out</a>
+        </p>
+        
+        <h3>
+            <%- link_to('&larr;Back', '/projects/' + project.name) %> #<%= issue.ordinal %>: <%= issue.title %>
+        </h3>
+        
+        <h5>Created at <%= issue.created %>.</h5>
+        
+        <%- form_tag('/projects/' + project.name + '/issues/' + issue.ordinal, { method: 'post' }) %>
+            <%- text_field_tag('title', issue.title, { placeholder: 'Title' }) %>
+            <br>
+            <%- text_tag('text', issue.text, { placeholder: 'Description' }) %>
+            <br>
+            <%- select_tag('progress',  [{ value: 'Open'     , text: 'Open'      },
+                                         { value: 'Resolve'  , text: 'Resolve'   },
+                                         { value: 'Integrate', text: 'Integrate' },
+                                         { value: 'Close'    , text: 'Close'     }], { value: issue.progress }) %>
+            <br>
+            <%- select_tag('severity',  [{ value: '1', text: '1' },
+                                         { value: '2', text: '2' },
+                                         { value: '3', text: '3' },
+                                         { value: '4', text: '4' },
+                                         { value: '4', text: '5' }], { value: issue.severity }) %>
+            <br>
+            <%- select_tag('assigned', users.map(function(user) {
+                    return { value: user.username, text: user.username };
+                }), { value: issue.assigned }) %>
+            <br>
+            <%- submit_tag('Save') %>
+        <%- form_end_tag() %>
+    </body>
+</html>

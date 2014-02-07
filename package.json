@@ -1,0 +1,16 @@
+{
+    "name"       : "issues",
+    "version"    : "0.0.1" ,
+    "description": "A demo of issue tracker.",
+    "author"     : "Olga Molozhavska <bla-bla-bla4444@rambler.ru>",
+    "main"       : "server.js",
+    
+    "dependencies": {
+        "express"        : "",
+        "express-helpers": "",
+        "mongoose"       : "",
+        "passport"       : "",
+        "passport-local" : "",
+        "ejs"            : "" 
+    }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title><%= project.title %></title>
+    </head>
+    
+    <body>
+        <p>
+            Hello <%= user.username %>, you are <%= user.role %>! <a href='/account/logout'>Log Out</a>
+        </p>
+        
+        <h3>
+            <a href='/projects'> &larr;Back</a> <%= project.title %>
+        </h3>
+        
+        <% if (project.issues.length) { %>
+            <table>
+                <thead>
+                    <th>#          </th>
+                    <th>Title      </th>
+                    <th>Progress   </th>
+                    <th>Severity   </th>
+                    <th>Assigned To</th>
+                    <th>Comments   </th>
+                    <th>Created    </th>
+                    <th></th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <% project.issues.forEach(function(issue) { %>
+                        <tr>
+                            <td><%= issue.ordinal         %></td>
+                            <td><%= issue.title           %></td>
+                            <td><%= issue.progress        %></td>
+                            <td><%= issue.severity        %></td>
+                            
+                            <td><%= issue.assigned.username %></td>
+                            
+                            <td><%= issue.comments.length %></td>
+                            <td><%= issue.created         %></td>
+                            
+                            <td>
+                                <%- link_to('View', '/projects/' + project.name + '/issues/' + issue.ordinal) %>
+                            </td>
+                            
+                            <% if (user.role === 'admin') { %>
+                                <td>
+                                    <%- link_to('Delete', '/projects/' + project.name + '/issues/' + issue.ordinal + '/delete') %>
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No issues to date.</p>
+        <% } %>
+        
+        <%- form_tag('/projects/' + project.name + '/issues', { method: 'post' }) %>
+            <label for='title'>Create an issue:</label>
+            <input type='text' name='title' placeholder='Title' />
+            
+            <input type="submit" value="Create" />
+        <%- form_end_tag() %>
+    </body>
+</html>

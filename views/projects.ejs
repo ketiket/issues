@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Projects</title>
+    </head>
+    
+    <body>
+        <p>
+            Hello <%= user.username %>, you are <%= user.role %>! <a href='/account/logout'>Log Out</a>
+        </p>
+        
+        <% if (projects.length) { %>
+            <table>
+                <thead>
+                    <th>Title</th>
+                    <th>Issues</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <% projects.forEach(function(project) { %>
+                        <tr>
+                            <td><%= project.title         %></td>
+                            <td><%= project.issues.length %></td>
+                            <td>
+                                <%- link_to('View', '/projects/' + project.name) %>
+                            </td>
+                            
+                            <% if (user.role === 'admin') { %>
+                                <td>
+                                    <%- link_to('Delete', '/projects/' + project.name + '/delete') %>
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No projects to date.</p>
+        <% } %>
+        
+        <form action='/projects' method='post'>
+            <label for='name'>Create a project:</label>
+            <input type='text' name='title' placeholder='Title' />
+            
+            <input type="submit" value="Create" />
+        </form>
+    </body>
+</html>
