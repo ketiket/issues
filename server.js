@@ -183,7 +183,6 @@ app.get('/projects/:name/delete', utils.authenticate('admin'), function(request,
 
 // === Controller: Issues ===
 
-// Create
 app.post('/projects/:name/issues', utils.authenticate(), function(request, response) {
     Project.findOne({ name: request.params.name }).exec(function(error, project) {
         var ordinal = 0;
@@ -205,9 +204,9 @@ app.post('/projects/:name/issues', utils.authenticate(), function(request, respo
     });
 });
 
-// Read
 app.get('/projects/:name/issues/:id', utils.authenticate(), function(request, response) {
-   Project.findOne({ name: request.params.name }).populate('issues.assigned').exec(function(error, project) {
+   Project.findOne({ name: request.params.name }).populate('issues.assigned issues.comments.user')
+                                                 .exec(function(error, project) {
        var issue = project.issues.filter(function(i) { return i.ordinal == request.params.id; })[0];
        
        User.find({}).exec(function(error, users) {
@@ -216,7 +215,6 @@ app.get('/projects/:name/issues/:id', utils.authenticate(), function(request, re
    });
 });
 
-// Update
 app.post('/projects/:name/issues/:id', utils.authenticate(), function(request, response) {
     Project.findOne({ name: request.params.name }).exec(function(error, project) {
         var issue = project.issues.filter(function(i) { return i.ordinal == request.params.id; })[0];
@@ -226,8 +224,8 @@ app.post('/projects/:name/issues/:id', utils.authenticate(), function(request, r
         issue.progress = request.body.progress;
         issue.severity = request.body.severity;
         
-        User.findOne({ name: request.body.assigned }).exec(function(error, user) {
-            issue.user = user;
+        User.findOne({ username: request.body.assigned }).exec(function(error, user) {
+            issue.assigned = user._id;
             
             project.save(function(error) {
                 response.redirect('/projects/' + request.params.name);
@@ -236,7 +234,6 @@ app.post('/projects/:name/issues/:id', utils.authenticate(), function(request, r
     });
 });
 
-// Delete
 app.get('/projects/:name/issues/:id/delete', utils.authenticate('admin'), function (request, response) {
     Project.findOne({ name: request.params.name }).exec(function(error, project) {
         project.issues.filter(function(i) { return i.ordinal == request.params.id; })[0].remove();
@@ -247,7 +244,6 @@ app.get('/projects/:name/issues/:id/delete', utils.authenticate('admin'), functi
     });
 });
 
-// Comment
 app.post('/projects/:name/issues/:id/comment', utils.authenticate(), function(request, response) {
     Project.findOne({ name: request.params.name }).exec(function(error, project) {
         var issue = project.issues.filter(function(i) { return i.ordinal == request.params.id; })[0];

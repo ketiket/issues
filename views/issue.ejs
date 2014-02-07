@@ -14,7 +14,7 @@
             <%- link_to('&larr;Back', '/projects/' + project.name) %> #<%= issue.ordinal %>: <%= issue.title %>
         </h3>
         
-        <h5>Created at <%= issue.created %>.</h5>
+        <h4>Created at <%= issue.created %>.</h4>
         
         <%- form_tag('/projects/' + project.name + '/issues/' + issue.ordinal, { method: 'post' }) %>
             <%- text_field_tag('title', issue.title, { placeholder: 'Title' }) %>
@@ -34,9 +34,22 @@
             <br>
             <%- select_tag('assigned', users.map(function(user) {
                     return { value: user.username, text: user.username };
-                }), { value: issue.assigned }) %>
+                }), { value: issue.assigned.username }) %>
             <br>
             <%- submit_tag('Save') %>
+        <%- form_end_tag() %>
+        
+        <h4><%= issue.comments.length %> comment(s)</h4>
+        
+        <% issue.comments.forEach(function(comment) { %>
+            <h5><%= comment.user.username %> commented on <%= comment.date %>:</h5>
+            <p><%= comment.text %></p>
+        <% }) %>
+        
+        <%- form_tag('/projects/' + project.name + '/issues/' + issue.ordinal + '/comment', { method: 'post' }) %>
+            <%- text_tag('text', '', { placeholder: 'Your text here..' }) %>
+            <br>
+            <%- submit_tag('Comment') %>
         <%- form_end_tag() %>
     </body>
 </html>
